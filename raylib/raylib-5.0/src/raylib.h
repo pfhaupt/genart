@@ -1033,6 +1033,7 @@ RLAPI void UnloadVrStereoConfig(VrStereoConfig config);           // Unload VR s
 
 // Shader management functions
 // NOTE: Shader functionality is not available on OpenGL 1.1
+RLAPI bool ReloadShader(Shader *shader, const char *vsFileName, const char *fsFileName); // Reload a shader from files
 RLAPI Shader LoadShader(const char *vsFileName, const char *fsFileName);   // Load shader from files and bind default locations
 RLAPI Shader LoadShaderFromMemory(const char *vsCode, const char *fsCode); // Load shader from code strings and bind default locations
 RLAPI bool IsShaderReady(Shader shader);                                   // Check if a shader is ready

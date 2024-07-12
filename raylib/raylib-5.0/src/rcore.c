@@ -1223,6 +1223,25 @@ void UnloadVrStereoConfig(VrStereoConfig config)
 // Module Functions Definition: Shaders Management
 //----------------------------------------------------------------------------------
 
+// Reload a shader from files
+bool ReloadShader(Shader *shader, const char *vsFileName, const char *fsFileName) {
+    Shader new = LoadShader(vsFileName, fsFileName);
+    if (new.id == RLGL.State.defaultShaderId) {
+        // Failed to load new shader
+        return false;
+    }
+    if (shader->id == RLGL.State.defaultShaderId) {
+        // old shader was default shader
+        *shader = new;
+        TRACELOG(RL_LOG_INFO, "SHADER: [ID %d] Program shader loaded successfully.", new.id);
+        return true;
+    }
+    UnloadShader(*shader);
+    *shader = new;
+    TRACELOG(RL_LOG_INFO, "SHADER: [ID %d] Program shader reloaded successfully.", new.id);
+    return true;
+}
+
 // Load shader from files and bind default locations
 // NOTE: If shader string is NULL, using default vertex/fragment shaders
 Shader LoadShader(const char *vsFileName, const char *fsFileName)
