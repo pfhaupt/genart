@@ -12,7 +12,17 @@ static const char *raylib_modules[] = {
     "utils",
 };
 
+static const char* important_files[] = {
+    "plug.h"
+};
+
 #define RAYLIB_VERSION "5.0"
+
+bool needs_rebuild(const char* output, Nob_File_Paths input, const char** other) {
+    if (nob_needs_rebuild(output, input.items, input.count)) return true;
+    if (nob_needs_rebuild(output, other, NOB_ARRAY_LEN(other))) return true;
+    return false;
+}
 
 bool build_raylib()
 {
@@ -73,7 +83,7 @@ bool build_main() {
     nob_cmd_append(&input, "./src/main.c");
 
     const char* output = "./build/main.exe";
-    if (nob_needs_rebuild(output, input.items, input.count)) {
+    if (needs_rebuild(output, input, important_files)) {
         Nob_Cmd cmd = {0};
         nob_cmd_append(&cmd, "x86_64-w64-mingw32-gcc");
         nob_cmd_append(&cmd, "-Wall", "-Wextra", "-ggdb");
@@ -97,7 +107,7 @@ bool build_shader(char* filename) {
     nob_cmd_append(&input, nob_temp_sprintf("./src/%s.c", filename));
 
     const char* output = nob_temp_sprintf("./build/%s.dll", filename);
-    if (nob_needs_rebuild(output, input.items, input.count)) {
+    if (needs_rebuild(output, input, important_files)) {
         Nob_Cmd cmd = {0};
         nob_cmd_append(&cmd, "x86_64-w64-mingw32-gcc");
         nob_cmd_append(&cmd, "-mwindows", "-Wall", "-Wextra", "-ggdb");
