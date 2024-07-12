@@ -33,8 +33,9 @@ void reload_shader_if_necessary(Shader* s, u64* l, const char* filepath) {
     u64 time = get_last_modified(filepath);
     if (time > *l) {
         *l = time;
-        UnloadShader(*s);
-        *s = LoadShader(NULL, filepath);
+        if (!ReloadShader(s, NULL, filepath)) {
+            TraceLog(LOG_ERROR, "Could not load shader %s.", filepath);
+        }
     }
 }
 
